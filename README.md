@@ -37,7 +37,6 @@ Projeyi klonlayın (Windows)
 
 ```bash
 git clone https://github.com/onlinEngineer/Django-RestFramework-IHA-Kiralama-Sistemi.git
-.\.venv\Scripts\activate
 cd ApiProject
 
 ```
