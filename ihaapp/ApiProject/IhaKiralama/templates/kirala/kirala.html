@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiralama Kaydet</title>
+</head>
+<body>
+    <h2>Kiralama Kaydet</h2>
+    <form id="kiralama-form">
+        <label for="iha">IHA:</label>
+        <input type="text" id="iha" required><br>
+        <label for="kiralayan">Kiralayan Üye:</label>
+        <input type="text" id="kiralayan" required><br>
+        <label for="kiralama_tarihi">Kiralama Tarihi:</label>
+        <input type="date" id="kiralama_tarihi" required><br>
+        <label for="kiralama_saati">Kiralama Saati:</label>
+        <input type="time" id="kiralama_saati" required><br>
+        <label for="iade_tarihi">İade Tarihi:</label>
+        <input type="date" id="iade_tarihi" required><br>
+        <button type="submit">Kaydet</button>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#kiralama-form").submit(function(event) {
+                event.preventDefault();
+                const iha = $("#iha").val();
+                const kiralayan = $("#kiralayan").val();
+                const kiralamaTarihi = $("#kiralama_tarihi").val();
+                const kiralamaSaati = $("#kiralama_saati").val();
+                const iadeTarihi = $("#iade_tarihi").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "http://127.0.0.1:8000/api/kirala/",  // Değiştirilmesi gereken URL
+                    data: JSON.stringify({
+                        iha: iha,
+                        kiralayan_uye: kiralayan,
+                        kiralama_tarihi: kiralamaTarihi,
+                        kiralama_saati: kiralamaSaati,
+                        iade_tarihi: iadeTarihi
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(response) {
+                        alert("Kiralama başarıyla kaydedildi!");
+                    },
+                    error: function(error) {
+                        alert("Kiralama kaydedilirken bir hata oluştu.");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

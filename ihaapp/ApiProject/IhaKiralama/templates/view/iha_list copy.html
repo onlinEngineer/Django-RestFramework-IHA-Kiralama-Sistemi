@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İHA Listesi</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <a class="nav-link" href="{% url 'home' %}">Anasayfaya Dön </a>
+        <h2 class="mb-4">İha Listesi</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <form id="iha-form">
+                    <input type="hidden" id="iha-id">
+                    <div class="form-group">
+                        <label for="marka">Marka:</label>
+                        <input type="text" class="form-control" id="marka" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="model">Model:</label>
+                        <input type="text" class="form-control" id="model" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="agirlik">Ağırlık:</label>
+                        <input type="text" class="form-control" id="agirlik" required>
+                    </div>
+                    <div class="form-group">
+                        
+                        <label for="kategori">Kategori:</label>
+                        <input type="text" class="form-control" id="kategori" required>
+                    </div>
+                    <button class="btn btn-primary" type="submit">Kaydet</button>
+                </form>
+            </div>
+        </div>
+        <hr>
+        <h3 class="mt-4">İha Tablosu</h3>
+        <table id="data-table" class="display">
+            <thead>
+                <tr>
+                    
+                    <th>Marka</th>
+                    <th>Model</th>
+                    <th>Ağırlık</th>
+                    <th>Kategori</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Tablo içeriği buraya gelecek -->
+            </tbody>
+        </table>
+    </div>
+    
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"> window.CSRF_TOKEN = "{{ csrf_token }}"; </script>
+
+
+<!-- ... (HTML başlık ve içerik) ... -->
+<script>
+    $(document).ready(function() {
+
+
+       
+
+        let isEditing = false; // Güncelleme modunda olup olmadığını tutan değişken
+        let dataTable = null; // DataTable nesnesini tutmak için
+
+        // DataTable oluşturma
+        dataTable = $("#data-table").DataTable({
+            columns: [
+           
+                { data: "marka" },
+                { data: "model" },
+                { data: "agirlik" },
+                { data: "kategori" },
+                { 
+                    data: null,
+                    render: function(data, type, row) {
+                        return '<button class="btn btn-sm btn-primary update-button" data-iha-id="' + data.iha_id + '">Güncelle</button>' +
+                               '<button class="btn btn-sm btn-danger delete-button" data-iha-id="' + data.iha_id + '">Sil</button>';
+                    }
+                }
+            ],
+            ajax: {
+                url: "http://127.0.0.1:8000/api/iha/", // Django API URL
+                dataSrc: "" // Anahtar belirtilmeden direkt verileri kullan
+            }
+        });
+
+        // Ekleme ve güncelleme işlemi
+        $("#iha-form").submit(function(event) {
+            event.preventDefault();
+            const ihaId = $("#iha-id").val();
+            const marka = $("#marka").val();
+            const model = $("#model").val();
+            const agirlik = $("#agirlik").val();
+            const kategori = $("#kategori").val();
+
+            if (ihaId === "" && !isEditing) {
+                // Yeni kayıt ekleme
+                $.ajax({ 
+                    type: "POST",
+                    url: "http://127.0.0.1:8000/api/iha/",
+                    data: JSON.stringify({
+                        marka: marka,
+                        model: model,
+                        agirlik: agirlik,
+                        kategori: kategori,
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    headers: {"X-CSRFToken": "{{ csrf_token }}"},
+                    success: function(response) {
+                        alert("İha başarıyla kaydedildi!");
+                        dataTable.ajax.reload(); // Tabloyu yenile
+                    },
+                    error: function(error) {
+                        alert("İha kaydedilirken bir hata oluştu.");
+                    }
+                });
+            } else if (isEditing) {
+                // Kaydı güncelleme
+                $.ajax({
+                    type: "PUT",
+                    url: "http://127.0.0.1:8000/api/iha/" + ihaId + "/",
+                    data: JSON.stringify({
+                        marka: marka,
+                        model: model,
+                        agirlik: agirlik,
+                        kategori: kategori,
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    headers: {"X-CSRFToken": "{{ csrf_token }}"},
+                    success: function(response) {
+                        alert("İha başarıyla güncellendi!");
+                        $("#iha-id").val(""); // Güncelleme tamamlandığında iha-id'yi sıfırla
+                        dataTable.ajax.reload(); // Tabloyu yenile
+                    },
+                    error: function(error) {
+                        alert("İha güncellenirken bir hata oluştu.");
+                    }
+                });
+            }
+            resetForm();
+        });
+
+        // Güncelleme işlemi
+        $("#data-table").on("click", ".update-button", function() {
+            const ihaId = $(this).data("iha-id");
+            const rowData = dataTable.row($(this).closest("tr")).data();
+
+            $("#iha-id").val(ihaId);
+            $("#marka").val(rowData.marka);
+            $("#model").val(rowData.model);
+            $("#agirlik").val(rowData.agirlik);
+            $("#kategori").val(rowData.kategori);
+
+            // Güncelle butonunu Kaydet olarak değiştir
+            $("#iha-form button[type='submit']").text("Güncelle");
+            if (!$(".cancel-button").length) {
+                $("#iha-form").append('<button type="button" class="btn btn-secondary cancel-button">İptal Et</button>');
+            }
+            isEditing = true; // Güncelleme modunu aç
+        });
+
+        // İptal Et işlemi
+        $("#iha-form").on("click", ".cancel-button", function() {
+            resetForm();
+        });
+
+        // Silme işlemi
+        $("#data-table").on("click", ".delete-button", function() {
+    const ihaId = $(this).data("iha-id");
+
+    const shouldDelete = confirm("İha'yı silmek istediğinize emin misiniz?");
+    if (shouldDelete) {
+        $.ajax({
+            type: "DELETE",
+            url:  "http://127.0.0.1:8000/api/iha/" + ihaId + "/",
+            headers: {"X-CSRFToken": "{{ csrf_token }}"},
+            success: function(response) {
+                alert("İha başarıyla silindi!");
+                dataTable.ajax.reload(); // Tabloyu yenile
+            },
+            error: function(error) {
+                alert("İha silinirken bir hata oluştu.");
+            }
+        });
+    }
+});
+
+        function resetForm() {
+            $("#iha-id").val("");
+            $("#marka").val("");
+            $("#model").val("");
+            $("#agirlik").val("");
+            $("#kategori").val("");
+            isEditing = false; // Güncelleme modunu kapat
+            $("#iha-form button[type='submit']").text("Kaydet");
+            $(".cancel-button").remove(); // İptal butonunu kaldır
+        }
+    });
+</script>
+
+
+<!-- ... (HTML kapanış etiketleri) ... -->
+
+
+</body>
+</html>

@@ -1,0 +1,265 @@
+{% extends 'home/home.html' %}
+{% block content %}
+  
+  <div class="container">
+    
+        <h2 class="mb-4">Tüm Kira Listesi</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <form id="kira-form">
+                    <input type="hidden" id="kira-id">
+                    <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="kiralama_tarihi">Kiralama Tarihi:</label>
+
+                        <input type="date" class="form-control" id="kiralama_tarihi" required>
+                    </div>
+               
+                    <div class="form-group col-md-6">
+                        <label for="iade_tarihi">İade Tarihi:</label>
+                        <input type="date" class="form-control" id="iade_tarihi" required>
+               
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="iha">Iha:</label>
+                        <select id="iha" name="iha" class="form-control" required>
+                            <!-- iha verileri burada yerleştirilecek -->
+                            <option>İha Seçiniz</option>
+                        </select>
+                        <!-- <input type="text" class="form-control" id="iha" required> -->
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="kiralayan_uye">Kirayalan Üye:</label>
+                        <select id="kiralayan_uye" class="form-control" required>
+                            <!-- iha verileri burada yerleştirilecek -->
+                            <option>Kullanıcı Seçiniz</option>
+                        </select>
+                        <option>
+                        <!-- <input type="text" class="form-control" id="kiralayan_uye" value="{{request.user.id}}" required disabled>  -->
+                    </div>
+                </div>
+                    <button class="btn btn-primary" type="submit">Kaydet</button>
+                </form>
+            </div>
+        </div>
+        <hr>
+        <h3 class="mt-4">Kiralanan İhalar Tablosu</h3>
+        <table id="data-table" class="display">
+            <thead>
+                <tr>
+                  
+                    <th>Kiralama Tarihi</th>
+               
+                    <th>İade Tarihi</th>
+                    <th>İha Id</th>
+                    <th>Kiralayan Üye Id</th>
+                    <th>İşlemler</th>
+
+                </tr>
+            </thead>
+        </thead>
+        <tbody>
+            <!-- Tablo içeriği buraya gelecek -->
+        </tbody>
+    </table>
+    </div>
+<br>
+
+    {% endblock %}
+
+    
+    {% block javascript %}
+
+
+    
+    <!-- ... (HTML başlık ve içerik) ... -->
+    <script>
+        $(document).ready(function() {
+
+            // iha verilerini çekme
+            $.ajax({
+                url: "http://127.0.0.1:8000/api/iha/",
+                method: "GET",
+                dataType: "json",
+                success: function(response) {
+                    const ihaSelect = $("#iha");
+                    response.forEach(function(iha) {
+                        ihaSelect.append('<option value="' + iha.iha_id + '">' + iha.marka +"-"+iha.model+ '</option>');
+                    });
+                },
+                error: function(error) {
+                    console.error("iha verileri çekilirken hata oluştu: ", error);
+                }
+            });
+
+            // Üye verilerini çekme
+            $.ajax({
+                url: "http://127.0.0.1:8000/api/users/",
+                method: "GET",
+                dataType: "json",
+                success: function(response) {
+                    const uyeSelect = $("#kiralayan_uye");
+                    response.forEach(function(uye) {
+                        uyeSelect.append('<option value="' + uye.id + '">' + uye.username + '</option>');
+                    });
+                },
+                error: function(error) {
+                    console.error("Üye verileri çekilirken hata oluştu: ", error);
+                }
+            });
+
+
+
+
+            let isEditing = false; // Güncelleme modunda olup olmadığını tutan değişken
+            let dataTable = null; // DataTable nesnesini tutmak için
+    
+            // DataTable oluşturma
+            dataTable = $("#data-table").DataTable({
+                columns: [
+               
+                    { data: "kiralama_tarihi" },
+                    { data: "iade_tarihi" },
+                    { data: "iha" },
+                    { data:"kiralayan_uye" },
+                    { 
+                        data: null,
+                        render: function(data, type, row) {
+                           
+                            return '<button class="btn btn-sm btn-primary update-button" data-kira-id="' + data.kiralama_id + '">Güncelle</button>' +" "+
+                                   '<button class="btn btn-sm btn-danger delete-button" data-kira-id="' + data.kiralama_id + '">Sil</button>';
+                        }
+                    }
+                ],
+                ajax: {
+                    url: "http://127.0.0.1:8000/api/kirala/", // Django API URL
+                    dataSrc: "" // Anahtar belirtilmeden direkt verileri kullan
+                }
+            });
+    
+            // Ekleme ve güncelleme işlemi
+            $("#kira-form").submit(function(event) {
+                event.preventDefault();
+                const kiraId = $("#kira-id").val();
+                const kira_tarih = $("#kiralama_tarihi").val();
+               
+                const iade=$("#iade_tarihi").val();
+                const iha_id = $("#iha").val();
+                const uye_id = $("#kiralayan_uye").val();
+    
+                if (kiraId === "" && !isEditing) {
+                    // Yeni kayıt ekleme
+                    $.ajax({ 
+                        type: "POST",
+                        url: "http://127.0.0.1:8000/api/kirala/",
+                        data: JSON.stringify({
+                           kiralama_tarihi:kira_tarih,
+                 
+                           iade_tarihi:iade,
+                           iha:iha_id,
+                           kiralayan_uye:uye_id,
+                        }),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        headers: {"X-CSRFToken": "{{ csrf_token }}"},
+                        success: function(response) {
+                            alert("Kiralama başarıyla kaydedildi!");
+                            dataTable.ajax.reload(); // Tabloyu yenile
+                        },
+                        error: function(error) {
+                            alert("Kiralama kaydedilirken bir hata oluştu.");
+                        }
+                    });
+                } else if (isEditing) {
+                    // Kaydı güncelleme
+                    $.ajax({
+                        type: "PUT",
+                        url: "http://127.0.0.1:8000/api/kirala/" + kiraId + "/",
+                        data: JSON.stringify({
+                            kiralama_tarihi:kira_tarih,
+                     
+                           iade_tarihi:iade,
+                           iha:iha_id,
+                           kiralayan_uye:uye_id,
+                        }),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        headers: {"X-CSRFToken": "{{ csrf_token }}"},
+                        success: function(response) {
+                            alert("İha başarıyla güncellendi!");
+                            $("#iha-id").val(""); // Güncelleme tamamlandığında iha-id'yi sıfırla
+                            dataTable.ajax.reload(); // Tabloyu yenile
+                        },
+                        error: function(error) {
+                            alert("İha güncellenirken bir hata oluştu.");
+                        }
+                    });
+                }
+                resetForm();
+            });
+    
+
+            $("#data-table").on("click", ".update-button", function() {
+                const kiraId = $(this).data("kira-id");
+                const rowData = dataTable.row($(this).closest("tr")).data();
+    
+                $("#kira-id").val(kiraId);
+                $("#kiralama_tarihi").val(rowData.kiralama_tarihi);
+            
+                $("#iade_tarihi").val(rowData.iade_tarihi);
+                $("#iha").val(rowData.iha);
+                $("#kiralayan_uye").val(rowData.kiralayan_uye);
+    
+                // Güncelle butonunu Kaydet olarak değiştir
+                $("#kira-form button[type='submit']").text("Güncelle");
+                if (!$(".cancel-button").length) {
+                    $("#kira-form").append('<button type="button" class="btn btn-secondary cancel-button">İptal Et</button>');
+                }
+                isEditing = true; // Güncelleme modunu aç
+            });
+    
+
+            // İptal Et işlemi
+            $("#kira-form").on("click", ".cancel-button", function() {
+                resetForm();
+            });
+    
+            // Silme işlemi
+            $("#data-table").on("click", ".delete-button", function() {
+        const kiraId = $(this).data("kira-id");
+    
+        const shouldDelete = confirm("Kiralamayı silmek istediğinize emin misiniz?");
+        if (shouldDelete) {
+            $.ajax({
+                type: "DELETE",
+                url:  "http://127.0.0.1:8000/api/kirala/" + kiraId + "/",
+                headers: {"X-CSRFToken": "{{ csrf_token }}"},
+                success: function(response) {
+                    alert("İha başarıyla silindi!");
+                    dataTable.ajax.reload(); // Tabloyu yenile
+                },
+                error: function(error) {
+                    alert("İha silinirken bir hata oluştu.");
+                }
+            });
+        }
+     });
+    
+            function resetForm() {
+                $("#kira-id").val("");
+                $("#kiralama_tarihi").val("");
+        
+                $("#iade_tarihi").val("");
+                $("#iha").val("");
+                $("#kiralayan_uye").val("");
+                isEditing = false; // Güncelleme modunu kapat
+                $("#kira-form button[type='submit']").text("Kaydet");
+                $(".cancel-button").remove(); // İptal butonunu kaldır
+            }
+        });
+    </script>
+    
+    
+{% endblock javascript %}

@@ -1,0 +1,52 @@
+{% extends 'home/home.html' %}
+{% block content %}
+    <div class="container mt-5">
+      
+    <table id="data-table" class="display">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>username</th>
+           
+                <th>email</th>
+                <th>last_login</th>
+             
+
+            </tr>
+        </thead>
+    </thead>
+    <tbody>
+        <!-- Tablo içeriği buraya gelecek -->
+    </tbody>
+</table>
+</div>
+
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+
+$(document).ready(function() {
+
+        // DataTable oluşturma
+        dataTable = $("#data-table").DataTable({
+            columns: [
+            { data: "id" },
+                { data: "username" },
+                { data: "email" },
+                { data: "last_login" },
+               
+            
+            ],
+            ajax: {
+                url: "http://127.0.0.1:8000/api/users/", // Django API URL
+                dataSrc: "" // Anahtar belirtilmeden direkt verileri kullan
+            }
+        });
+    });
+    
+</script>
+
+{% endblock javascript %}
+
