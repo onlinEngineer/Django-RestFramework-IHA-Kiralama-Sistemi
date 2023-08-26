@@ -46,7 +46,7 @@ Projeyi başlat
 python manage.py runserver
 ```
 
-Eğer ihakiralama.sql kullanacaksanız aşağıdaki admin ile login olabilirsiniz. (Admin sayfasına erişebilmek için superuser olunmalıdır.
+Eğer ihakiralama.sql kullanacaksanız aşağıdaki admin ile login olabilirsiniz. (Admin sayfasına erişebilmek için superuser olunmalıdır.)
 
 ```bash
 
