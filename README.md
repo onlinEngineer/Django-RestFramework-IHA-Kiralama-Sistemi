@@ -47,6 +47,17 @@ Projeyi başlat
 python manage.py runserver
 ```
 
+Kullanıcılar (SuperUser)
+Eğer ihakiralama.sql kullanacaksanız aşağıdaki admin ile login olabilirsiniz.
+
+```bash
+
+Admin kullanıcı username: admin
+Şifre: admin123
+
+```
+
+
 API Linkleri
 ```bash
 http://127.0.0.1:8000/api/iha/
@@ -54,6 +65,9 @@ http://127.0.0.1:8000/api/kirala/
 http://127.0.0.1:8000/api/users/
 
 ```
+
+
+
 
 Sayfa Linkleri
 ```bash
@@ -65,6 +79,22 @@ http://127.0.0.1:8000/iha-list/
 http://127.0.0.1:8000/kira-list/
 http://127.0.0.1:8000/user-list/
 http://127.0.0.1:8000/user-kiralama/
+```
+
+Database Bilgileri
+```bash
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'ihakiralama',
+        'USER':'postgres',
+        'PASSWORD':'admin',
+        'HOST':'localhost',
+        'PORT':'5432'
+    }
+}
+
 ```
 
 
