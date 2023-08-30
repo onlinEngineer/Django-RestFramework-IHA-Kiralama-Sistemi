@@ -32,21 +32,50 @@ Django ile İHA Kiralama Projesi
 - Login olmak zorunluluğu bulunmaktadır.
 - Kullanıcı izinleri bulunmaktadır. Normal bir kullanıcı admin sayfalarına erişememektedir.
 ## Bilgisayarınızda Çalıştırın
-
 Projeyi klonlayın (Windows)
 
 ```bash
 git clone https://github.com/onlinEngineer/Django-RestFramework-IHA-Kiralama-Sistemi.git
+cd Django-RestFramework-IHA-Kiralama-Sistemi/ihaapp
+python -m venv myenv
+.\.myenv\Scripts\activate
+pip install django
+pip install djangorestframework
+pip install django-cors-headers
+pip install django-crispy-forms
+pip install crispy-bootstrap4
+pip install psycopg2
 cd ApiProject
 
 ```
+Projeyi klonlayın (Linux)
+
+```bash
+git clone https://github.com/onlinEngineer/Django-RestFramework-IHA-Kiralama-Sistemi.git
+cd Django-RestFramework-IHA-Kiralama-Sistemi/ihaapp
+python3 -m venv myenv
+source myenv/bin/activate
+pip install django
+pip install djangorestframework
+pip install django-cors-headers
+pip install django-crispy-forms
+pip install crispy-bootstrap4
+pip install psycopg2-binary
+cd ApiProject
+
+```
+
 Projeyi başlat
 
 ```bash
+#Windows
 python manage.py runserver
+
+#Linux
+python3 manage.py runserver
 ```
 
-Eğer ihakiralama.sql kullanacaksanız aşağıdaki admin ile login olabilirsiniz. (Admin sayfasına erişebilmek için superuser olunmalıdır.)
+ihakiralama.sql'i pgAdmin4 ile import ettikten sonra aşağıdaki admin ile login olabilirsiniz. (Admin sayfasına erişebilmek için superuser olunmalıdır.)
 
 ```bash
 
