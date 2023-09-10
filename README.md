@@ -37,7 +37,7 @@ Clone the project (Windows)
 
 ```bash
 git clone https://github.com/onlinEngineer/Django-RestFramework-UAV-Rental-System.git
-cd Django-RestFramework-UAV-Rental-System/uavapp
+cd Django-RestFramework-UAV-Rental-System/ihaapp
 python -m venv myenv
 .\myenv\Scripts\activate
 pip install django
@@ -53,7 +53,7 @@ Clone the project (Linux)
 
 ```bash
 git clone https://github.com/onlinEngineer/Django-RestFramework-UAV-Rental-System.git
-cd Django-RestFramework-UAV-Rental-System/uavapp
+cd Django-RestFramework-UAV-Rental-System/ihaapp
 python3 -m venv myenv
 source myenv/bin/activate
 pip install django
