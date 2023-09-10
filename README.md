@@ -1,7 +1,7 @@
 
-# Django-RestFramework-IHA-Kiralama-Sistemi
+# Django-RestFramework-UAV-Rental-System
 
-Django ile İHA Kiralama Projesi
+UAV Rental Project with Django
 
 
 
@@ -9,7 +9,7 @@ Django ile İHA Kiralama Projesi
  
 
 
-## Kullanılan Teknolojiler
+## Technologies Used
 
 - Python
 - Django
@@ -19,26 +19,27 @@ Django ile İHA Kiralama Projesi
 
 
   
-## Özellikler
+## Features
 
-- Üyelik ve Giriş Ekranları
-- Kiralanacak İHA için; Ekleme, Silme, Güncelleme, Listeleme, Kiralama
-   + İHA Özellikleri: Marka, Model, Ağırlık, Kategori vb.
--Üyelerin İHA kiralama kayıtları
-- Kiralanan İHA için; Kiralamayı Silme, Güncelleme, Listeleme
-   + Kiralama Özellikleri: İHA, Tarih ve Saat Aralıkları, Kiralayan Üye vb.
-- Tüm Listeleme sayfaları için tabloda filtreleme ve arama özellikleri
-- Admin sayfası bulunmaktadır.
-- Login olmak zorunluluğu bulunmaktadır.
-- Kullanıcı izinleri bulunmaktadır. Normal bir kullanıcı admin sayfalarına erişememektedir.
-## Bilgisayarınızda Çalıştırın
-Projeyi klonlayın (Windows)
+- Membership and Login Screens
+- CRUD operations for UAV (Unmanned Aerial Vehicle) rental, including Add, Delete, Update, List, and Rent operations
+- UAV Specifications: Brand, Model, Weight, Category, etc.
+- Recording of UAV rental transactions by members
+- CRUD operations for rented UAVs, including Delete, Update, and List operations
+- Rental Details: UAV, Date and Time Intervals, Renter, etc.
+- Filtering and search functionality for all listing pages
+- Admin page for system management
+- Login is mandatory
+- User permissions are implemented; regular users cannot access admin pages
+  
+## Running the Project on Your Computer
+Clone the project (Windows)
 
 ```bash
-git clone https://github.com/onlinEngineer/Django-RestFramework-IHA-Kiralama-Sistemi.git
-cd Django-RestFramework-IHA-Kiralama-Sistemi/ihaapp
+git clone https://github.com/onlinEngineer/Django-RestFramework-UAV-Rental-System.git
+cd Django-RestFramework-UAV-Rental-System/uavapp
 python -m venv myenv
-.\.myenv\Scripts\activate
+.\myenv\Scripts\activate
 pip install django
 pip install djangorestframework
 pip install django-cors-headers
@@ -48,11 +49,11 @@ pip install psycopg2
 cd ApiProject
 
 ```
-Projeyi klonlayın (Linux)
+Clone the project (Linux)
 
 ```bash
-git clone https://github.com/onlinEngineer/Django-RestFramework-IHA-Kiralama-Sistemi.git
-cd Django-RestFramework-IHA-Kiralama-Sistemi/ihaapp
+git clone https://github.com/onlinEngineer/Django-RestFramework-UAV-Rental-System.git
+cd Django-RestFramework-UAV-Rental-System/uavapp
 python3 -m venv myenv
 source myenv/bin/activate
 pip install django
@@ -65,7 +66,7 @@ cd ApiProject
 
 ```
 
-Projeyi başlat
+Start the project
 
 ```bash
 #Windows
@@ -75,17 +76,17 @@ python manage.py runserver
 python3 manage.py runserver
 ```
 
-ihakiralama.sql'i pgAdmin4 ile import ettikten sonra aşağıdaki admin ile login olabilirsiniz. (Admin sayfasına erişebilmek için superuser olunmalıdır.)
+After importing ihakiralama.sql into pgAdmin4, you can log in with the following admin credentials to access the admin page.
 
 ```bash
 
-Admin kullanıcı username: admin
-Şifre: admin123
+Admin username: admin
+Password: admin123
 
 ```
 
 
-API Linkleri
+API Links
 ```bash
 http://127.0.0.1:8000/api/iha/
 http://127.0.0.1:8000/api/kirala/
@@ -96,7 +97,7 @@ http://127.0.0.1:8000/api/users/
 
 
 
-Sayfa Linkleri
+Sayfa Links
 ```bash
 http://127.0.0.1:8000/admin/
 http://127.0.0.1:8000/register/
@@ -108,7 +109,7 @@ http://127.0.0.1:8000/user-list/
 http://127.0.0.1:8000/user-kiralama/
 ```
 
-Database Bilgileri
+Database Configuration
 ```bash
 
 DATABASES = {
@@ -125,7 +126,7 @@ DATABASES = {
 ```
 
 
-## Ekran Görüntüleri
+## Screenshots
 ### Register Page
 <img src="https://github.com/onlinEngineer/Django-RestFramework-IHA-Kiralama-Sistemi/assets/70773825/603a24ca-b858-4811-8101-78b4f5ae73aa">
 
@@ -138,13 +139,13 @@ DATABASES = {
 ### Admin Home Page
 <img src="https://github.com/onlinEngineer/Django-RestFramework-IHA-Kiralama-Sistemi/assets/70773825/8ec47096-d967-4a71-8f11-ff7f584e2827">
 
-### Admin İha CRUD Management
+### Admin UAV CRUD Management
 <img src="https://github.com/onlinEngineer/Django-RestFramework-IHA-Kiralama-Sistemi/assets/70773825/8d2f7b47-427c-4a93-b0d9-ac00cb1466fa">
 
-### Admin Kiralama CRUD Management
+### Admin Rental CRUD Management
 <img src="https://github.com/onlinEngineer/Django-RestFramework-IHA-Kiralama-Sistemi/assets/70773825/5358b2d8-5acb-4274-ab90-0cebda32d84d">
 
-### Admin Kiralama Page
+### Admin Rental Page
 <img src="https://github.com/onlinEngineer/Django-RestFramework-IHA-Kiralama-Sistemi/assets/70773825/278faa79-c167-42c2-af5e-6f2af03b7228">
 
 ### Admin Users Page
@@ -153,13 +154,13 @@ DATABASES = {
 ### User Home Page
 <img src="https://github.com/onlinEngineer/Django-RestFramework-IHA-Kiralama-Sistemi/assets/70773825/67aa4611-807c-40ef-bb8e-bb36fffe1ac3">
 
-### User Kiralama Page
+### User Rental Page
 <img src="https://github.com/onlinEngineer/Django-RestFramework-IHA-Kiralama-Sistemi/assets/70773825/d246727d-48d9-45d2-896f-ecb2fa7abf5c">
 
   
-## Ekler
+## Additions
 
-- Listeleme sayfaları için datatable kullanıldı
-- İlişkisel tabloların ayrı ayrı tutulmaktadır.
-- Django için ekstra kütüphaneler kullanıldı.
-- Ön yüzde (Front-End) Bootstrap, Jquery, Ajax vs. kullanılmıştır.
+- Datatables are used for listing pages
+- Relational tables are kept separate
+- Extra libraries are used for Django
+- Bootstrap, Jquery, Ajax, etc. are used for the front-end
